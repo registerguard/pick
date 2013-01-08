@@ -1,4 +1,3 @@
-</html>
 <!doctype html>
 <html>
 
@@ -6,7 +5,7 @@
 	
 	<meta charset="utf-8">
 	
-	<title>Pick demo page</title>
+	<title>Pick pics demo page!</title>
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	
@@ -17,7 +16,7 @@
 		
 		<h1>Creation of a <code>dt.cms.schema.CMSStory</code> object.</h1>
 		
-		<csp:object name="gStory" classname="dt.cms.schema.CMSStory" objid="28804455">
+		<csp:object name="gStory" classname="dt.cms.schema.CMSStory" objid="28804455" />
 		
 		<p>#(gStory)#</p>
 		
@@ -30,6 +29,34 @@
 		<h1>Example #1: Bare minimum requirements to get the tag working.</h1>
 		
 		<custom:rg:get:pics story="#(gStory)#" position="300px">
+			
+			#(value)#, 
+			
+		</custom:rg:get:pics>
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #2: Using a story ID as a string.</h1>
+		
+		<custom:rg:get:pics story="28804455" position="300px">
+			
+			#(value)#, 
+			
+		</custom:rg:get:pics>
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #3: Full featured.</h1>
+		
+		<custom:rg:get:pics story="28804455" position="300px">
 			
 			<csp:if condition='count >= 1'>
 				
