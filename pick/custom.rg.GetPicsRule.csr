@@ -71,13 +71,11 @@
 			do ##this.WriteServer(" set " _ csr("obj") _ " = ##class(custom.rg.Pick).pics(" _ csr("story") _ ", " _ csr("position") _ ", " _ csr("items") _ ", " _ csr("include") _ ", " _ csr("exclude") _ ", " _ csr("order") _ ") ")
 			do ##this.WriteServer(" set " _ csr("total") _ " = " _ csr("obj") _ ".Count() ")
 			do ##this.WriteServer(" set " _ csr("count") _ " = """" ")
-			do ##this.WriteServer( ##this.NextLabel _ " set " _ csr("value") _ " = " _ csr("obj") _ ".Get" _ csr("next") _ "(." _ csr("count") _ ") ")
+			do ##this.WriteServer( ##this.NextLabel )
+			do ##this.WriteServer(" set " _ csr("value") _ " = " _ csr("obj") _ ".Get" _ csr("next") _ "(." _ csr("count") _ ") ")
 			do ##this.WriteServer(" if (" _ csr("count") _ " = """") { ")
 			do ##this.WriteServer(" 	goto " _ ##this.EndLabel _ " ;{ ")
 			do ##this.WriteServer(" } ")
-			
-			; Garbage collection:
-			kill csr
 			
 		</script>
 		
@@ -101,9 +99,6 @@
 			
 			; Server garbage collection:
 			do ##this.WriteServer(" kill " _ csr("count") _ ", " _ csr("value") _ ", " _ csr("obj") _ ", " _ csr("total") )
-			
-			; Garbage collection:
-			kill csr
 			
 		</script>
 		
