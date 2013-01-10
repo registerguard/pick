@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	
+	<meta charset="utf-8">
+	
+	<title>Pick pics demo page!</title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	
+	<style>
+		<!--
+			.booyah,
+			.booyah ul {
+				margin: 0;
+				padding: 0;
+			}
+				.booyah li {
+					list-style: none;
+					background: #eee;
+					border-width: 1px 0;
+					border-style: solid;
+					border-color: #666;
+					margin: -1px 0;
+					padding: 10px 0;
+				}
+					.booyah li li {
+						background: #fff;
+						border-width: 1px 0;
+						border-color: #ddd;
+					}
+				.booyah li img {
+					display: block;
+					margin-bottom: 10px;
+				}
+				.booyah li p {
+					margin: 0;
+					padding: 0;
+				}
+				
+				table {
+					color:#333;
+					border: 1px solid #666;
+					border-collapse: collapse;
+					border-spacing: 0;
+					width: 100%;
+					margin: 10px 0;
+				}
+					table caption {
+						text-align: left;
+						padding-bottom: 5px;
+					}
+					table th,
+					table td { text-align: center; }
+					table th {
+						padding: 10px;
+						border: 1px solid #666;
+						background: #ddd;
+					}
+					table td {
+						border: 1px solid #666;
+						padding: 10px;
+						background: #fff;
+					}
+		-->
+	</style>
+	
+</head>
+<body>
+	
+	<table>
+		<caption>The Register-Guard <code>dbo.Priority</code> table (to give you an idea of what our setup is like).</caption>
+		<thead>
+			<tr>
+				<th><code>priorityId</code></th>
+				<th><code>priorityName</code></th>
+			</tr>
+		</thead>
+		<tbody><tr>
+			<td>0</td>
+			<td>-</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>03</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>04</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>01</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td>02</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>Mug</td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td>Not for Web</td>
+		</tr>
+		<tr>
+			<td>8</td>
+			<td>05</td>
+		</tr>
+	</tbody></table>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Creation of a <code>dt.cms.schema.CMSStory</code> object.</h1>
+		
+		
+		
+		<p>4@dt.cms.schema.CMSStory</p>
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #1: Bare minimum requirements to get the tag working.</h1>
+		
+		<p>Both "position" and "story" are required tag attributes.</p>
+		
+		
+			
+			2738378
+			<br>
+			
+		
+			
+			2738342
+			<br>
+			
+		
+			
+			2738360
+			<br>
+			
+		
+			
+			2738396
+			<br>
+			
+		
+			
+			2738415
+			<br>
+			
+		
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #2: Reversing the "direction".</h1>
+		
+		
+			
+			2738415
+			<br>
+			
+		
+			
+			2738396
+			<br>
+			
+		
+			
+			2738360
+			<br>
+			
+		
+			
+			2738342
+			<br>
+			
+		
+			
+			2738378
+			<br>
+			
+		
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #3: Custom <code>ORDER BY</code> (advanced technique).</h1>
+		
+		
+			
+			2738378
+			<br>
+			
+		
+			
+			2738396
+			<br>
+			
+		
+			
+			2738342
+			<br>
+			
+		
+			
+			2738360
+			<br>
+			
+		
+			
+			2741870
+			<br>
+			
+		
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #4: Using a story ID as a string.</h1>
+		
+		<p>Most attributes will work with <a href="http://docs.intersystems.com/cache20091/csp/docbook/DocBook.UI.Page.cls?KEY=RCSP_DIRECTIVE_REXP">runtime</a>/<a href="http://docs.intersystems.com/cache20091/csp/docbook/DocBook.UI.Page.cls?KEY=RCSP_DIRECTIVE_CEXP">compile-time</a> expressions.</p>
+		
+		
+			
+			2738378
+			<br>
+			
+		
+			
+			2738342
+			<br>
+			
+		
+			
+			2738360
+			<br>
+			
+		
+			
+			2738396
+			<br>
+			
+		
+			
+			2738415
+			<br>
+			
+		
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #5: Include a specific priority.</h1>
+		
+		
+			
+			2738342
+			
+		
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #6: Exclude multiple priorities.</h1>
+		
+		
+			
+			2738378
+			<br>
+			
+		
+			
+			2738360
+			<br>
+			
+		
+			
+			2738396
+			<br>
+			
+		
+			
+			2738415
+			<br>
+			
+		
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Example #7: Full-featured example.</h1>
+		
+		
+		
+		
+			
+			
+				<ul class="booyah">
+			
+				
+				<li>
+					<img src="dt.jpg">
+					<ul>
+						<li>ID: 2738378</li>
+						<li>Obj: 5@%Library.ListOfObjects</li>
+						<li>Count: 1</li>
+						<li>Total: 4</li>
+						<li><p>Oregon head coach Chip Kelly wipes his eyes after the 
+Fiesta Bowl NCAA college football game, Thursday, Jan. 3, 2013, in 
+Glendale, Ariz. Oregon defeated Kansas State 35-17.(AP Photo/Paul 
+Connors)</p></li>
+					</ul>
+				</li>
+				
+			
+			
+		
+			
+			
+				
+				<li>
+					<img src="dt_002.jpg">
+					<ul>
+						<li>ID: 2738360</li>
+						<li>Obj: 5@%Library.ListOfObjects</li>
+						<li>Count: 2</li>
+						<li>Total: 4</li>
+						<li><p>Oregon's Michael Clay, left, holds up the championship 
+trophy as head coach Chip Kelly looks on after the Fiesta Bowl NCAA 
+college football game against Kansas State Thursday, Jan. 3, 2013, in 
+Glendale, Ariz.  Oregon defeated Kansas State 35-17.(AP Photo/Ross D. 
+Franklin)</p></li>
+					</ul>
+				</li>
+				
+			
+			
+		
+			
+			
+				
+				<li>
+					<img src="dt_003.jpg">
+					<ul>
+						<li>ID: 2738396</li>
+						<li>Obj: 5@%Library.ListOfObjects</li>
+						<li>Count: 3</li>
+						<li>Total: 4</li>
+						<li><p>Oregon Josh Huff babbles a reception after being interfered
+ with by Kansas State defender Randall Evans during the 3rd quarter. 
+(Chris Pietsch/The Register-Guard)</p></li>
+					</ul>
+				</li>
+				
+			
+			
+		
+			
+			
+				
+				<li>
+					<img src="dt_004.jpg">
+					<ul>
+						<li>ID: 2738415</li>
+						<li>Obj: 5@%Library.ListOfObjects</li>
+						<li>Count: 4</li>
+						<li>Total: 4</li>
+						<li><p>Oregon's De'Anthony Thomas escapes from Kansas State's Ty 
+Zimmerman and heads upfield during the Fiesta Bowl Thursday, January 3, 
+2013. (Brian Davies/The Register-Guard)</p></li>
+					</ul>
+				</li>
+				
+			
+				</ul>
+			
+			
+		
+		
+		
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>Debug:</h1>
+		
+		
+<pre>%CSPsc=1
+%ROWCOUNT=1
+%ROWID=4357433
+%mmmu1=""
+%mmmu2=""
+%mmmu4=""
+%mmmu5=""
+%objcn=7
+%objqacn=7
+%request=&lt;OBJECT REFERENCE&gt;[1@%CSP.Request]
+%response=&lt;OBJECT REFERENCE&gt;[2@%CSP.Response]
+%session=&lt;OBJECT REFERENCE&gt;[3@%CSP.Session]
+Timers=0
+cmsPictureId=5093534
+currIO="UTF8"
+debug=0
+fileHeader=""
+fileheaderId=5093534
+gRequestId=99577494
+gStory=&lt;OBJECT REFERENCE&gt;[4@dt.cms.schema.CMSStory]
+localDebug=0
+localFileheaderId=5093534
+localProperty="caption"
+localStoryId=-1
+localTable="fileheader"
+oldNs="CMS"
+property="caption"
+rReturnValue=4357433
+result=&lt;OBJECT REFERENCE&gt;[15@%Library.ResultSet]
+ruleError=""
+sc=1
+storyId=-1
+table="fileheader"
+theId=4357433</pre>
+		
+	</section>
+	
+
+</body></html>
