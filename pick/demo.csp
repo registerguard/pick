@@ -19,16 +19,14 @@
 				.booyah li {
 					list-style: none;
 					background: #eee;
-					border-width: 1px 0;
-					border-style: solid;
-					border-color: #666;
+					border: 1px solid #666;
 					margin: -1px 0;
-					padding: 10px 0;
+					padding: 20px;
 				}
 					.booyah li li {
 						background: #fff;
-						border-width: 1px 0;
-						border-color: #ddd;
+						border-color: #999;
+						padding: 10px;
 					}
 				.booyah li img {
 					display: block;
@@ -248,6 +246,27 @@
 		</custom:rg:get:pics>
 		
 		#[ kill position ]#
+		
+	</section>
+	
+	<hr>
+	
+	<section>
+		
+		<h1>API call.</h1>
+		
+		#[ new pics set pics = ##class(custom.rg.Pick).pics(gStory, "288pxw") ]#
+		
+		<csp:loop counter="x" from="1" to="#(pics.Count())#">
+			
+			#[ new pic set pic = pics.GetAt(x) ]#
+			
+			#(pic.%Id())#
+			<br>
+			
+		</csp:loop>
+		
+		#[ kill pics ]#
 		
 	</section>
 	
