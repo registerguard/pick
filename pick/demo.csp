@@ -281,14 +281,14 @@
 			; Debug:
 			write !, "<pre>"
 			try {
-			set currIO = ##class(%SYS.NLS.Device).SetIO("HTML")
-			zwrite
+				set currIO = ##class(%SYS.NLS.Device).SetIO("HTML")
+				zwrite
 			}
 			catch {
-			write "ERROR: ", $ZERROR
+				write "ERROR: ", $ZERROR
 			}
 			if ($get(currIO) '= "") {
-			do ##class(%SYS.NLS.Device).SetIO(currIO)
+				do ##class(%SYS.NLS.Device).SetIO(currIO)
 			}
 			write "</pre>"
 			
