@@ -14,7 +14,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 @modified Monday, January 28, 2013]]></Description>
 <IncludeCode>Audience</IncludeCode>
 <Super>%RegisteredObject</Super>
-<TimeCreated>62828,61282.937075</TimeCreated>
+<TimeCreated>62831,49007.592474</TimeCreated>
 
 <Method name="pics">
 <Description>
@@ -89,14 +89,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 		; Start building the query:
 		set sql = "SELECT DISTINCT "
 		
-		; Make items a whole number:
+		; Make items a whole number integer (or "0" if invalid):
 		set items = (items \ 1) // https://groups.google.com/d/topic/intersystems-public-cache/gFvXTNjgq7o/discussion
 		
 		; Items?
-		if ($isvalidnum(items) && (items > 0)) {
+		if (items) {
 			
 			; Setup "params" array for required input parameters:
-			$$$pbuild($number(items, 0))
+			$$$pbuild(items)
 			
 			; Amend query:
 			set sql = sql _ "TOP ? "
@@ -284,19 +284,5 @@ http://www.apache.org/licenses/LICENSE-2.0
 	quit return
 ]]></Implementation>
 </Method>
-
-<Storage name="Default">
-<Type>%Library.CacheStorage</Type>
-<DataLocation>^custom.rg.PickD</DataLocation>
-<DefaultData>PickDefaultData</DefaultData>
-<IdLocation>^custom.rg.PickD</IdLocation>
-<IndexLocation>^custom.rg.PickI</IndexLocation>
-<StreamLocation>^custom.rg.PickS</StreamLocation>
-<Data name="PickDefaultData">
-<Value name="1">
-<Value>%%CLASSNAME</Value>
-</Value>
-</Data>
-</Storage>
 </Class>
 </Export>

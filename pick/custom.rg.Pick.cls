@@ -88,14 +88,14 @@ ClassMethod pics(
 		; Start building the query:
 		set sql = "SELECT DISTINCT "
 		
-		; Make items a whole number:
+		; Make items a whole number integer (or "0" if invalid):
 		set items = (items \ 1) // https://groups.google.com/d/topic/intersystems-public-cache/gFvXTNjgq7o/discussion
 		
 		; Items?
-		if ($isvalidnum(items) && (items > 0)) {
+		if (items) {
 			
 			; Setup "params" array for required input parameters:
-			$$$pbuild($number(items, 0))
+			$$$pbuild(items)
 			
 			; Amend query:
 			set sql = sql _ "TOP ? "
