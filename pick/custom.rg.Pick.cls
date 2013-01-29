@@ -7,23 +7,24 @@ Include Audience
 /// @copyright Copyright (c) 2013 Micky Hulse/The Register-Guard.
 /// @license Released under the Apache License, Version 2.0.
 /// http://www.apache.org/licenses/LICENSE-2.0
-/// @version 1.0.0
-/// @date Monday, January 7, 2013
+/// @version 1.1.0
+/// @created Monday, January 7, 2013
+/// @modified Monday, January 28, 2013
 Class custom.rg.Pick Extends %RegisteredObject
 {
 
 /// @param story { mixed } A dt.cms.schema.CMSStory object or a valid CMSStory ID (required).
 /// @param position { %String } Picture item position (required).
-/// @param items { %String } Number of CMSPicture objects to return; the default number is '5'.
 /// @param include { %String } Include only these priorities (comma delimited list).
 /// @param exclude { %String } Exclude only these priorities (comma delimited list).
+/// @param items { %String } Number of CMSPicture objects to return; the default number '0', which returns all CMSPictures.
 /// @param order { %String } Custom ORDER BY, used in SQL statement.
 ClassMethod pics(
 	story As dt.cms.schema.CMSStory = -1,
 	position As %String = "",
-	items As %Integer = 5,
 	include As %String = "",
 	exclude As %String = "",
+	items As %Integer = 0,
 	order As %String = "") As %ListOfObjects
 {
 	
@@ -54,6 +55,7 @@ ClassMethod pics(
 	
 	/**
 	 * Creates an array of key => values.
+	 * WARNING: Must be called in order that they appear in SQL statement!
 	 *
 	 * $$$pbuild("areaID")
 	 * $$$pbuild("sectionId")
@@ -71,6 +73,9 @@ ClassMethod pics(
 	
 	/*--------------------------------------------------------------------*/
 	
+	; Get RULE debug:
+	set debug = ##class(dt.cms.support.Rules).getDebug()
+	
 	; Initialze the return value:
 	set return = ##class(%ListOfObjects).%New()
 	
@@ -78,24 +83,55 @@ ClassMethod pics(
 	set:($isobject(story)) story = story.%Id() // Get its ID.
 	
 	; Check required arguments:
-	if ($isvalidnum(story, -1) && $length(position)) { // A scale value of –1 causes num to be truncated to an integer value (3.9 = 3) before performing range checking.
-		
-		; Get RULE debug:
-		set debug = ##class(dt.cms.support.Rules).getDebug()
-		
-		; Setup "params" array for required input parameters:
-		; WARNING: Must be called in order that they appear in SQL statement!
-		$$$pbuild(items)
-		$$$pbuild(story)
-		$$$pbuild(position)
+	if ($isvalidnum(story) && $length(position)) {
 		
 		; Start building the query:
-		set sql = "SELECT TOP ? CMSPicture " _ 
-		          "FROM dt_cms_schema.CMSPictureMapping cmspm, dbo.ForeignDbLink fdbl, dbo.FileHeader fhdr " _ 
-		          "WHERE cmspm.cmsStory = ? " _ 
-		          "AND cmspm.position = ? " _  
-		          "AND fdbl.fileheaderId = CMSPicture->fileheaderID " _ 
-		          "AND fhdr.fileheaderId = CMSPicture->fileheaderID "
+		set sql = "SELECT DISTINCT "
+		
+		; Make items a whole number:
+		set items = (items \ 1) // https://groups.google.com/d/topic/intersystems-public-cache/gFvXTNjgq7o/discussion
+		
+		; Items?
+		if ($isvalidnum(items) && (items > 0)) {
+			
+			; Setup "params" array for required input parameters:
+			$$$pbuild($number(items, 0))
+			
+			; Amend query:
+			set sql = sql _ "TOP ? "
+		
+		}
+		
+		; Continue building the query:
+		set sql = sql _ 
+		          "cmspm.CMSPicture AS CMSPicture " _ 
+		          "FROM dt_cms_schema.CMSPictureMapping cmspm " _ 
+		          "INNER JOIN dt_cms_schema.CMSPicture cmsp " _ 
+		          "ON (cmsp.ID = cmspm.CMSPicture) " _ 
+		          "INNER JOIN dbo.FileHeader fh " _ 
+		          "ON fh.fileHeaderId = cmsp.fileheaderId " _ 
+		          "INNER JOIN dt_cms_schema.CMSStory cmss " _ 
+		          "ON (cmss.ID = cmspm.cmsStory) " _ 
+		          "INNER JOIN dbo.ForeignDbLink fdbl " _ 
+		          "ON (fdbl.fileHeaderId = cmsp.fileheaderId) " _ 
+		          "AND (fdbl.foreignidField = 'story.storyId') " _ 
+		          "INNER JOIN dbo.Story story " _ 
+		          "ON (story.ID = cmss.story) " _ 
+		          "AND (story.storyId = fdbl.foreignId) " _ 
+		          "INNER JOIN dt_cms_schema.CMSPictureVersion cmspv " _ 
+		          "ON (cmspv.ID = cmsp.TheCMSPictureVersion) "
+		
+		; Position (already validated):
+		$$$pbuild(position)
+		
+		; Append query:
+		set sql = sql _ "WHERE cmspm.position = ? "
+		
+		; Story (IBID):
+		$$$pbuild(story)
+		
+		; Append query:
+		set sql = sql _ "AND cmss.ID = ? "
 		
 		; Includes?
 		if ($length(include)) {
@@ -107,7 +143,7 @@ ClassMethod pics(
 			$$$pbuild(include)
 			
 			; Amend query:
-			set sql = sql _ "AND fhdr.priorityid %INLIST ? "
+			set sql = sql _ "AND fh.priorityId %INLIST ? "
 			
 		}
 		
@@ -121,15 +157,59 @@ ClassMethod pics(
 			$$$pbuild(exclude)
 			
 			; Amend query:
-			set sql = sql _ "AND fhdr.priorityid NOT %INLIST ? "
+			set sql = sql _ "AND fh.priorityId NOT %INLIST ? "
 			
 		}
 		
-		; Append group by:
-		set sql = sql _ "GROUP BY CMSPicture "
-		
 		; Append ORDER BY:
-		set sql = sql _ "ORDER BY " _ $select($length(order):order, 1:"fdbl.vieworder ASC") // ORDER BY custom value OR fdbl.vieworder by default.
+		set sql = sql _ "ORDER BY " _ $select($length(order):order, 1:"fdbl.viewOrder") // ORDER BY custom value OR fdbl.viewOrder (ASC) by default.
+		
+		/*
+		
+		-- Copy/paste friendly:
+		
+		SELECT DISTINCT
+			cmspm.CMSPicture AS CMSPicture, fdbl.viewOrder, cmsp.fileheaderId, fh.priorityId
+		FROM
+			dt_cms_schema.CMSPictureMapping cmspm
+		INNER JOIN
+			dt_cms_schema.CMSPicture cmsp
+		ON
+			(cmsp.ID = cmspm.CMSPicture)
+		INNER JOIN 
+			dbo.FileHeader fh 
+		ON 
+			fh.fileHeaderId = cmsp.fileheaderId
+		INNER JOIN
+			dt_cms_schema.CMSStory cmss
+		ON
+			(cmss.ID = cmspm.cmsStory)
+		INNER JOIN
+			dbo.ForeignDbLink fdbl
+		ON
+			(fdbl.fileHeaderId = cmsp.fileheaderId)
+		AND
+			(fdbl.foreignidField = 'story.storyId')
+		INNER JOIN
+			dbo.Story story
+		ON
+			(story.ID = cmss.story)
+		AND
+			(story.storyId = fdbl.foreignId)
+		INNER JOIN 
+			dt_cms_schema.CMSPictureVersion cmspv
+		ON
+			(cmspv.ID = cmsp.TheCMSPictureVersion)
+		WHERE
+			cmspm.position = '288pxw'
+		AND
+			cmss.ID = 29353870
+		AND
+			fh.priorityId NOT IN (4) 
+		ORDER BY
+			fdbl.viewOrder
+		
+		*/
 		
 		; Output debug?
 		if (debug) {
@@ -138,24 +218,9 @@ ClassMethod pics(
 			do ##class(dt.cms.support.Rules).debugRule(debug, "sql = " _ sql)
 			
 			; ClassMethod arguements:
-			do ##class(dt.cms.support.Rules).debugRule(debug, "##class(custom.rg.Pick).pics(story=""" _ story _ """ position=""" _ position _ """ items=""" _ items _ """ include=""" _ $listtostring(include, ", ") _ """ exclude=""" _ $listtostring(exclude, ", ") _ """ order=""" _ order _ """)")
+			do ##class(dt.cms.support.Rules).debugRule(debug, "##class(custom.rg.Pick).pics(story=""" _ story _ """ position=""" _ position _ """ include=""" _ $listtostring(include, ", ") _ """ exclude=""" _ $listtostring(exclude, ", ") _ $case($isvalidnum(items, -1), 1:(""" items=""" _ $number(items, -1)), :"") _ """ order=""" _ order _ """)")
 			
 		}
-		
-		/*
-		
-		Copy/paste friendly:
-		
-		SELECT TOP 5 CMSPicture 
-		FROM dt_cms_schema.CMSPictureMapping cmspm, dbo.ForeignDbLink fdbl, dbo.FileHeader fhdr 
-		WHERE cmspm.cmsStory = 29263427 
-		AND cmspm.position = '288pxw' 
-		AND fdbl.fileheaderId = CMSPicture->fileheaderID 
-		AND fhdr.fileheaderId = CMSPicture->fileheaderID 
-		GROUP BY CMSPicture 
-		ORDER BY fdbl.vieworder ASC
-		
-		*/
 		
 		; Try/catch block required when using $$$dtThrow:
 		try {
@@ -207,6 +272,10 @@ ClassMethod pics(
 			$$$dtThrow(e.AsStatus(), "Something failed.")
 			
 		}
+		
+	} elseif (debug) {
+		
+		do ##class(dt.cms.support.Rules).debugRule(debug, "There's something wrong with your required parameters: $isvalidnum(story) = " _ $isvalidnum(story) _ ", $length(position) = " _ $length(position))
 		
 	}
 	
